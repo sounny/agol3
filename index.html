@@ -18,8 +18,10 @@
       "esri/Map",
       "esri/views/MapView",
       "esri/Graphic",  
-      "esri/layers/GraphicsLayer"
-    ], function (esriConfig,Map, MapView, Graphic, GraphicsLayer) {
+      "esri/layers/GraphicsLayer",
+      //adding in the module for the feature layers
+      "esri/layers/FeatureLayer"
+    ], function (esriConfig,Map, MapView, Graphic, GraphicsLayer,FeatureLayer) {
 
       esriConfig.apiKey = "AAPK2cb19acc98eb406b80346e85af5aa1ffagWp07_WJVQlFAY2XL6xGrQ86USz9K6UzB1OaBd37PTIlYdHTo04S0-F9ETbr-dC";
       const map = new Map({
@@ -50,9 +52,7 @@
         const point = { //Create a point  
           type: "point",  
           longitude: -97.750689,    //long lat of Stevie Ray Vaughan Statue
-          latitude: 30.263098,
-          attributes: attributes,
-          popupTemplate: popupTemplate
+          latitude: 30.263098
 
         };
 
@@ -67,10 +67,36 @@
 
         const pointGraphic = new Graphic({  
           geometry: point,  
-          symbol: simpleMarkerSymbol  
+          symbol: simpleMarkerSymbol,
+          attributes: attributes,
+          popupTemplate: popupTemplate  
         });
 
         graphicsLayer.add(pointGraphic); // Add the point graphic to the graphics layer
+
+
+        // Define a pop-up for usaeduLayer
+        const popupEduusa = {
+          "title": "EDUs",
+          "content": "<b>Name:</b> {INSTNM}<br><b>Total Enrollment:</b> {INSTSIZE}<br>"
+        }
+
+
+        const usaeduLayer = new FeatureLayer({
+          
+          url: "https://services2.arcgis.com/FiaPA4ga0iQKduv3/arcgis/rest/services/Colleges_and_Universities_View/FeatureServer",
+          
+          //adding the popup here
+          outFields: ["INSTNM","INSTSIZE"],
+          popupTemplate: popupEduusa
+
+          
+
+          }); 
+        
+        
+        
+        map.add(usaeduLayer);
 
     });
   </script>
